@@ -1,0 +1,208 @@
+/* Import Font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+/* Variabel Global */
+:root {
+  --primary-color: #007bff;
+  --secondary-color: #6c757d;
+  --success-color: #28a745;
+  --danger-color: #dc3545;
+  --bg-color: #f4f7f6;
+  --sidebar-bg: #ffffff;
+  --text-color: #333;
+  --border-color: #dee2e6;
+  --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+.container {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 280px;
+  background-color: var(--sidebar-bg);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  height: 100%;
+}
+
+.sidebar-header {
+  padding: 1.5rem;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  color: var(--primary-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.patient-profile {
+  padding: 1.5rem;
+  text-align: center;
+  border-bottom: 1px solid var(--border-color);
+}
+.patient-profile i {
+  font-size: 4rem;
+  color: #ccc;
+  margin-bottom: 0.5rem;
+}
+#patientName { font-size: 1.2rem; margin-bottom: 0.25rem; }
+#patientRM { color: var(--secondary-color); font-size: 0.9rem; }
+
+.sidebar-nav ul {
+  list-style: none;
+  padding: 1rem 0;
+}
+.sidebar-nav a, .sidebar-nav button {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 1rem 1.5rem;
+  text-decoration: none;
+  color: var(--secondary-color);
+  font-weight: 500;
+  border-left: 4px solid transparent;
+  transition: all 0.3s ease;
+  background: none; border: none; width: 100%; font-size: 1rem; cursor: pointer;
+}
+.sidebar-nav a:hover, .sidebar-nav a.active {
+  color: var(--primary-color);
+  background-color: #e9ecef;
+  border-left-color: var(--primary-color);
+}
+#logoutBtn { color: var(--danger-color); font-weight: 500; }
+#logoutBtn:hover { background-color: #f8d7da; border-left-color: var(--danger-color); }
+
+/* Main Content */
+.main-content {
+  margin-left: 280px;
+  padding: 2rem;
+  flex-grow: 1;
+}
+
+.content-view { animation: fadeIn 0.5s; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+h1 { margin-bottom: 0.5rem; }
+p { margin-bottom: 1.5rem; color: #666; }
+
+/* Dashboard Cards */
+.card-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+.info-card { background: #fff; padding: 1.5rem; border-radius: 8px; box-shadow: var(--card-shadow); }
+.info-card h4 { display: flex; align-items: center; gap: 10px; margin-bottom: 0.5rem; }
+.info-card p { margin: 0; font-size: 1.1rem; color: var(--primary-color); font-weight: 500;}
+
+.quick-actions { margin-top: 2rem; }
+.quick-actions button { margin-right: 1rem; font-size: 1rem; padding: 0.8rem 1.5rem; }
+.btn-primary { background-color: var(--primary-color); color: white; border: none; border-radius: 6px; cursor: pointer; transition: background-color 0.3s; }
+.btn-secondary { background-color: var(--secondary-color); color: white; border: none; border-radius: 6px; cursor: pointer; transition: background-color 0.3s; }
+.btn-primary:hover { background-color: #0056b3; }
+.btn-secondary:hover { background-color: #5a6268; }
+
+/* Form */
+.form-container { background: #fff; padding: 2rem; border-radius: 8px; box-shadow: var(--card-shadow); max-width: 700px; }
+.form-step { margin-bottom: 1.5rem; }
+.form-step label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
+.form-step select, .form-step input {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 1rem;
+}
+.form-step select:disabled, .form-step input:disabled, #submitJanjiBtn:disabled {
+  background-color: #e9ecef;
+  cursor: not-allowed;
+}
+
+#slotJamContainer { display: flex; flex-wrap: wrap; gap: 10px; }
+.slot-jam {
+  padding: 0.8rem;
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.slot-jam:hover { background-color: #e9f2ff; }
+.slot-jam.selected { background-color: var(--primary-color); color: white; font-weight: 600; }
+.info-text { width: 100%; color: #999; }
+
+/* Appointment History */
+.appointment-section { margin-bottom: 2rem; }
+.appointment-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: var(--card-shadow);
+  margin-bottom: 1rem;
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.appointment-details { flex-grow: 1; }
+.appointment-details h4 { margin: 0 0 0.5rem 0; }
+.appointment-details p { margin: 0; font-size: 0.9rem; color: var(--secondary-color); }
+.appointment-actions { display: flex; gap: 10px; margin-top: 1rem; }
+.appointment-card.past .appointment-details { cursor: pointer; }
+.soap-notes {
+    display: none;
+    padding: 1rem;
+    margin-top: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    border-left: 4px solid var(--primary-color);
+}
+.soap-notes p { margin-bottom: 0.5rem; font-size: 0.9rem; }
+.soap-notes p strong { display: inline-block; width: 90px; color: #333;}
+
+/* Table */
+.table-container { background: #fff; border-radius: 8px; box-shadow: var(--card-shadow); padding: 1rem; overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 1rem; border-bottom: 1px solid var(--border-color); text-align: left; }
+thead { background-color: #f8f9fa; }
+
+/* Modal */
+.modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center; }
+.modal.show { display: flex; }
+.modal-content { background: white; border-radius: 8px; width: 90%; max-width: 500px; animation: slideIn 0.3s; }
+.modal-header { padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); }
+.modal-body { padding: 1.5rem; }
+.modal-footer { padding: 1rem 1.5rem; text-align: right; border-top: 1px solid var(--border-color); }
+.close-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; }
+
+/* Bukti Pendaftaran */
+.bukti-header { text-align: center; font-size: 1.5rem; font-weight: 600; padding-bottom: 1rem; border-bottom: 2px dashed #ccc; margin-bottom: 1rem; }
+.bukti-header i { color: var(--primary-color); }
+#buktiCetak h3 { text-align: center; font-weight: 500; margin-bottom: 1.5rem; }
+.bukti-info p { margin-bottom: 0.8rem; font-size: 1rem; }
+.bukti-info strong { display: inline-block; width: 120px; }
+.nomor-antrian { text-align: center; margin-top: 1.5rem; font-size: 1.2rem; background-color: #f0f0f0; padding: 1rem; border-radius: 6px;}
+.nomor-antrian span { font-size: 2rem; font-weight: 700; color: var(--primary-color); }
+.bukti-footer { text-align: center; margin-top: 1.5rem; font-size: 0.8rem; color: #999; }
+
+@keyframes slideIn { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container { flex-direction: column; }
+  .sidebar { position: relative; width: 100%; height: auto; }
+  .main-content { margin-left: 0; }
+}

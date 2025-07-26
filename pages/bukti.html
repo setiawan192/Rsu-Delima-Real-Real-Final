@@ -1,0 +1,32 @@
+<!-- pages/bukti.html -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Bukti Janji</title>
+  <link rel="stylesheet" href="../css/pasien.css" />
+</head>
+<body>
+  <h2>Bukti Janji</h2>
+  <div id="buktiJanji"></div>
+  <button onclick="downloadPDF()">Cetak PDF</button>
+  <button onclick="kirimViaWA()">Kirim via WhatsApp</button>
+
+  <script src="../js/download.js"></script>
+  <script>
+    const data = JSON.parse(localStorage.getItem("janjiAktif"));
+    const div = document.getElementById("buktiJanji");
+    if (data) {
+      div.innerHTML = `
+        <p>Poli: ${data.poli}</p>
+        <p>Dokter: ${data.dokter}</p>
+        <p>Tanggal: ${data.tanggal}</p>
+        <p>Jam: ${data.jam}</p>
+        <p>No Antrian: ${data.antrian}</p>
+      `;
+    } else {
+      div.textContent = "Belum ada janji.";
+    }
+  </script>
+</body>
+</html>

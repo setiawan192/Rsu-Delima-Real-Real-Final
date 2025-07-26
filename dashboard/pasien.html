@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portal Pasien - RSU Delima</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      display: flex;
+    }
+    .sidebar {
+      width: 250px;
+      background-color: #1976d2;
+      color: white;
+      height: 100vh;
+      padding: 20px;
+    }
+    .main-content {
+      flex: 1;
+      padding: 20px;
+    }
+    .nav-link.active {
+      font-weight: bold;
+      color: yellow;
+    }
+    .hidden { display: none; }
+    .btn-primary, .btn-secondary {
+      padding: 10px 20px;
+      margin: 5px;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-primary {
+      background: #1976d2;
+      color: white;
+    }
+    .btn-secondary {
+      background: gray;
+      color: white;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: white;
+      padding: 20px;
+      width: 400px;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>RSU Delima</h2>
+    <p id="patientName">Pasien: -</p>
+    <p id="patientRM">No RM: -</p>
+    <hr />
+    <ul>
+      <li><a href="#" class="nav-link active" data-view="dashboard-view">Dashboard</a></li>
+      <li><a href="#" class="nav-link" data-view="buat-janji-view">Buat Janji</a></li>
+      <li><a href="#" class="nav-link" data-view="riwayat-view">Riwayat</a></li>
+      <li><a href="#" id="logoutBtn">Logout</a></li>
+    </ul>
+  </div>
+  <div class="main-content">
+    <section id="dashboard-view">
+      <h1>Selamat Datang</h1>
+      <p>Kelola janji temu Anda di RSU Delima.</p>
+    </section>
+
+    <section id="buat-janji-view" class="hidden">
+      <h2>Buat Janji Temu</h2>
+      <form id="formJanji">
+        <label>Poli:</label>
+        <select id="poli">
+          <option>Umum</option>
+          <option>Gigi</option>
+          <option>Spesialis Anak</option>
+        </select>
+        <label>Dokter:</label>
+        <select id="dokter">
+          <option>dr. Budi</option>
+          <option>dr. Sari</option>
+        </select>
+        <label>Tanggal:</label>
+        <input type="date" id="tanggal" required />
+        <label>Jam:</label>
+        <input type="time" id="jam" required />
+        <button class="btn-primary" type="submit">Buat Janji</button>
+      </form>
+    </section>
+
+    <section id="riwayat-view" class="hidden">
+      <h2>Riwayat Janji Temu</h2>
+      <ul id="riwayatList"></ul>
+    </section>
+  </div>
+
+  <div id="buktiModal" class="modal">
+    <div class="modal-content">
+      <h3>Bukti Janji Temu</h3>
+      <div id="buktiIsi"></div>
+      <button class="btn-secondary" onclick="window.print()">Cetak</button>
+      <button class="btn-primary" id="kirimWaBtn">Kirim ke WhatsApp</button>
+    </div>
+  </div>
+
+<script>
+  if (!localStorage.getItem("username") || localStorage.getItem("role") !== "pasien") {
+    alert("Akses ditolak. Silakan login terlebih dahulu.");
+    window.location.href = "../login.html";
+  }
+
+  document.getElementById("patientName").textContent = "Pasien: " + localStorage.getItem("username");
+  document.getElementById("patientRM").textContent = "No RM: " + (localStorage.getItem("rm") || "000001");
+
+  document.querySelectorAll(".nav-link").forEach(link => {
+    link.addEventListener("click", e => {
+      e.preventDefault();
+      const target = e.target.getAttribute("data-view");
+      document.querySelectorAll("section").forEach(s => s.classList.add("hidden"));
+      document.getElementById(target).classList.remove("hidden");
+      document.querySelectorAll(".nav-link").forEach(l => l.classList.remove("active"));
+      e.target.classList.add("active");
+      if (target === "riwayat-view") tampilkanRiwayat();
+    });
+  });
+
+  document.getElementById("logoutBtn").addEventListener("click", () => {
+    localStorage.clear();
+    window.location.href = "../login.html";
+  });
+
+  document.getElementById("formJanji").addEventListener("submit", e => {
+    e.preventDefault();
+    const poli = document.getElementById("poli").value;
+    const dokter = document.getElementById("dokter").value;
+    const tanggal = document.getElementById("tanggal").value;
+    const jam = document.getElementById("jam").value;
+
+    const janji = { poli, dokter, tanggal, jam, pasien: localStorage.getItem("username") };
+    const riwayat = JSON.parse(localStorage.getItem("riwayatJanji")) || [];
+    riwayat.push(janji);
+    localStorage.setItem("riwayatJanji", JSON.stringify(riwayat));
+
+    const isi = `
+      <p>Pasien: ${janji.pasien}</p>
+      <p>Poli: ${poli}</p>
+      <p>Dokter: ${dokter}</p>
+      <p>Tanggal: ${tanggal}</p>
+      <p>Jam: ${jam}</p>
+    `;
+    document.getElementById("buktiIsi").innerHTML = isi;
+    document.getElementById("buktiModal").style.display = "flex";
+
+    document.getElementById("kirimWaBtn").onclick = () => {
+      const msg = encodeURIComponent(`Janji Temu:
+Pasien: ${janji.pasien}
+Poli: ${poli}
+Dokter: ${dokter}
+Tanggal: ${tanggal}
+Jam: ${jam}`);
+      window.open(`https://wa.me/?text=${msg}`, "_blank");
+    };
+  });
+
+  function tampilkanRiwayat() {
+    const list = document.getElementById("riwayatList");
+    list.innerHTML = "";
+    const data = JSON.parse(localStorage.getItem("riwayatJanji")) || [];
+    data.forEach(j => {
+      const li = document.createElement("li");
+      li.textContent = `${j.tanggal} - ${j.jam} | ${j.poli} (${j.dokter})`;
+      list.appendChild(li);
+    });
+  }
+
+  window.onclick = function(e) {
+    if (e.target == document.getElementById("buktiModal")) {
+      document.getElementById("buktiModal").style.display = "none";
+    }
+  }
+</script>
+</body>
+</html>

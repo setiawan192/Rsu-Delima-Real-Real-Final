@@ -1,0 +1,30 @@
+<!-- downloads/template-bukti.html -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Template Bukti Janji</title>
+</head>
+<body>
+  <h3>Bukti Janji Pemeriksaan RSU Delima</h3>
+  <div id="isiBukti"></div>
+  <button onclick="window.print()">Cetak</button>
+  <button onclick="kirimViaWA()">Kirim WhatsApp</button>
+  <button onclick="downloadExcel()">Download Excel</button>
+
+  <script src="../js/download.js"></script>
+  <script>
+    const data = JSON.parse(localStorage.getItem("janjiAktif"));
+    const div = document.getElementById("isiBukti");
+    if (data) {
+      div.innerHTML = `
+        <p>Poli: ${data.poli}</p>
+        <p>Dokter: ${data.dokter}</p>
+        <p>Tanggal: ${data.tanggal}</p>
+        <p>Jam: ${data.jam}</p>
+        <p>No Antrian: ${data.antrian}</p>
+      `;
+    }
+  </script>
+</body>
+</html>

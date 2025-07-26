@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Squid Game - Piggy Bank</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="assets/squid-logo.png" type="image/x-icon" />
+</head>
+<body>
+  <main>
+    <h1>Piggy Bank Hadiah Permainan</h1>
+
+    <!-- Celengan + Gantungan -->
+    <div class="scene">
+      <div class="hook-line"></div>
+      <div class="piggy-bank">
+        <div class="glass">
+          <div id="coin-container"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tombol dan Counter -->
+    <button id="drop-button">💰 Tambahkan Hadiah</button>
+    <div class="counter">Total Hadiah: ₩ <span id="coin-count">0</span></div>
+
+    <!-- DISCLAIMER DEWASA -->
+    <div class="disclaimer-box">
+      <h2>⚠️ PERINGATAN - DISCLAIMER</h2>
+      <p>
+        Permainan ini adalah <strong>simulasi visual fiksi</strong> yang terinspirasi dari serial <em>Squid Game</em>. Semua elemen bersifat hiburan dan tidak memiliki nilai uang nyata.<br><br>
+
+        <strong>1.</strong> Tidak ada hadiah uang sungguhan dalam permainan ini.<br>
+        <strong>2.</strong> Koin yang muncul hanyalah elemen digital yang disimulasikan secara visual.<br>
+        <strong>3.</strong> Game ini tidak dimaksudkan untuk mempromosikan kekerasan, perjudian, atau kegiatan berisiko.<br>
+        <strong>4.</strong> <span style="color: #ff6666; font-weight: bold;">Konten ini DILARANG untuk anak di bawah usia 16 tahun.</span> Jika Anda masih di bawah umur, harap segera keluar dari halaman ini.<br>
+        <strong>5.</strong> Orang tua/wali bertanggung jawab untuk memantau akses anak-anak terhadap konten ini.<br>
+        <strong>6.</strong> Dengan menekan tombol <strong>"Tambahkan Hadiah"</strong>, Anda menyatakan telah membaca dan menyetujui seluruh ketentuan ini.<br><br>
+
+        Jika Anda merasa tidak nyaman atau terganggu dengan tema ini, disarankan untuk tidak melanjutkan simulasi.
+      </p>
+    </div>
+  </main>
+
+  <!-- Audio -->
+  <audio id="coin-sound" src="assets/coin-drop.mp3"></audio>
+  <audio id="bg-music" src="assets/bg-theme.mp3" autoplay loop></audio>
+
+  <script src="script.js"></script>
+</body>
+</html>

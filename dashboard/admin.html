@@ -1,0 +1,280 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Admin - RSU Delima</title>
+  <link rel="stylesheet" href="../css/admin.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <script>
+    if (localStorage.getItem("role") !== "admin") {
+      alert("Akses ditolak! Anda harus login sebagai admin.");
+      location.href = "../login.html";
+    }
+  </script>
+
+  <nav class="sidebar" role="navigation" aria-label="Sidebar Admin">
+    <div class="sidebar-header">
+      <i class="fas fa-hospital-user"></i>
+      <h2>RSU Delima</h2>
+    </div>
+    <ul>
+      <li><a href="#" id="navDashboard" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+      <li><a href="#" id="navDokter"><i class="fas fa-user-doctor"></i> Data Dokter</a></li>
+      <li><a href="#" id="navPasien"><i class="fas fa-user-injured"></i> Data Pasien</a></li>
+      <li><a href="#" id="navJadwal"><i class="fas fa-calendar-alt"></i> Jadwal Praktik</a></li>
+      <li><a href="#" id="navLaporan"><i class="fas fa-chart-line"></i> Laporan</a></li>
+      <li><button id="logoutBtn" aria-label="Logout Admin"><i class="fas fa-sign-out-alt"></i> Logout</button></li>
+    </ul>
+  </nav>
+
+  <main class="main-content" role="main" tabindex="-1">
+    <section id="dashboard-view" class="content-section">
+      <h1>Selamat Datang, Admin!</h1>
+      <p>Anda berada di pusat kendali Sistem Informasi RSU Delima. Pilih menu di samping untuk mengelola data.</p>
+      <div class="stats-container" id="dashboard-stats"></div>
+    </section>
+
+    <section id="dokter-view" class="content-section" style="display: none;">
+      <h1>Manajemen Data Dokter</h1>
+      <div class="toolbar">
+        <button id="btnTambahDokter" class="btn btn-primary"><i class="fas fa-plus"></i> Tambah Dokter</button>
+        <input type="text" id="searchDokter" placeholder="Cari dokter berdasarkan nama atau spesialisasi...">
+      </div>
+      <div class="table-container">
+        <table class="data-table" aria-label="Tabel Data Dokter">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nama Lengkap</th>
+              <th>Spesialisasi</th>
+              <th>No. Telepon</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="dokterTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="pasien-view" class="content-section" style="display: none;">
+      <h1>Manajemen Data Pasien</h1>
+      <div class="toolbar">
+        <button id="btnTambahPasien" class="btn btn-primary"><i class="fas fa-plus"></i> Tambah Pasien</button>
+        <input type="text" id="searchPasien" placeholder="Cari pasien berdasarkan nama atau No. RM...">
+      </div>
+      <div class="table-container">
+        <table class="data-table" aria-label="Tabel Data Pasien">
+          <thead>
+            <tr>
+              <th>No. RM</th>
+              <th>Nama Pasien</th>
+              <th>Tanggal Lahir</th>
+              <th>Alamat</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="pasienTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="jadwal-view" class="content-section" style="display: none;">
+      <h1>Manajemen Jadwal Praktik</h1>
+      <div class="toolbar">
+        <button id="btnTambahJadwal" class="btn btn-primary"><i class="fas fa-plus"></i> Tambah Jadwal</button>
+        <input type="text" id="searchJadwal" placeholder="Cari jadwal berdasarkan nama dokter...">
+      </div>
+      <div class="table-container">
+        <table class="data-table" aria-label="Tabel Jadwal Praktik">
+          <thead>
+            <tr>
+              <th>Dokter</th>
+              <th>Spesialisasi</th>
+              <th>Hari</th>
+              <th>Jam Praktik</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="jadwalTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="laporan-view" class="content-section" style="display: none;">
+      <h1>Laporan & Statistik</h1>
+      <p>Ringkasan data penting dari sistem RSU Delima.</p>
+      <div class="stats-container" id="laporan-stats"></div>
+      <div class="chart-container">
+        <h3>Grafik Kunjungan Pasien</h3>
+        <canvas id="chartKunjungan" style="width:100%; max-width: 800px;"></canvas>
+      </div>
+    </section>
+  </main>
+
+  <div id="formModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="modalTitle">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitle">Form</h2>
+        <button id="closeModalBtn" class="close-btn" aria-label="Tutup Modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="dataForm"></form>
+      </div>
+      <div class="modal-footer">
+        <button id="btnBatal" class="btn btn-secondary">Batal</button>
+        <button id="btnSimpan" type="submit" form="dataForm" class="btn btn-primary">Simpan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script Interaksi (Gabungan admin.js + data.js) -->
+  <script>
+
+// Data dummy (simpan sementara di memori browser)
+let dokterList = [
+  { id: 1, nama: "Dr. Andi Wijaya", spesialis: "Penyakit Dalam", telepon: "081234567890" },
+  { id: 2, nama: "Dr. Sari Utami", spesialis: "Anak", telepon: "089876543210" }
+];
+
+let pasienList = [
+  { noRM: "RM001", nama: "Budi Santoso", tglLahir: "1990-01-01", alamat: "Jl. Merdeka 1" },
+  { noRM: "RM002", nama: "Siti Aminah", tglLahir: "1985-05-15", alamat: "Jl. Kebon Jeruk 10" }
+];
+
+let jadwalList = [
+  { dokter: "Dr. Andi Wijaya", spesialis: "Penyakit Dalam", hari: "Senin", jam: "08:00 - 12:00" },
+  { dokter: "Dr. Sari Utami", spesialis: "Anak", hari: "Selasa", jam: "10:00 - 14:00" }
+];
+
+// Navigasi antar menu
+document.querySelectorAll("nav a, #logoutBtn").forEach(link => {
+  link.addEventListener("click", e => {
+    e.preventDefault();
+    document.querySelectorAll(".content-section").forEach(s => s.style.display = "none");
+    document.querySelectorAll("nav a").forEach(a => a.classList.remove("active"));
+
+    if (link.id === "logoutBtn") {
+      localStorage.removeItem("role");
+      location.href = "../login.html";
+      return;
+    }
+
+    link.classList.add("active");
+    const viewId = link.id.replace("nav", "").toLowerCase() + "-view";
+    document.getElementById(viewId).style.display = "block";
+    if (viewId === "laporan-view") renderChart();
+  });
+});
+
+// Tampilkan data dokter
+function renderDokterTable() {
+  const tbody = document.getElementById("dokterTableBody");
+  tbody.innerHTML = "";
+  dokterList.forEach((d, i) => {
+    const row = `<tr>
+      <td>${d.id}</td>
+      <td>${d.nama}</td>
+      <td>${d.spesialis}</td>
+      <td>${d.telepon}</td>
+      <td><button onclick="hapusDokter(${i})">Hapus</button></td>
+    </tr>`;
+    tbody.innerHTML += row;
+  });
+}
+
+// Hapus dokter
+function hapusDokter(index) {
+  if (confirm("Yakin ingin menghapus data dokter ini?")) {
+    dokterList.splice(index, 1);
+    renderDokterTable();
+  }
+}
+
+// Tampilkan data pasien
+function renderPasienTable() {
+  const tbody = document.getElementById("pasienTableBody");
+  tbody.innerHTML = "";
+  pasienList.forEach((p, i) => {
+    const row = `<tr>
+      <td>${p.noRM}</td>
+      <td>${p.nama}</td>
+      <td>${p.tglLahir}</td>
+      <td>${p.alamat}</td>
+      <td><button onclick="hapusPasien(${i})">Hapus</button></td>
+    </tr>`;
+    tbody.innerHTML += row;
+  });
+}
+
+// Hapus pasien
+function hapusPasien(index) {
+  if (confirm("Yakin ingin menghapus data pasien ini?")) {
+    pasienList.splice(index, 1);
+    renderPasienTable();
+  }
+}
+
+// Tampilkan data jadwal
+function renderJadwalTable() {
+  const tbody = document.getElementById("jadwalTableBody");
+  tbody.innerHTML = "";
+  jadwalList.forEach((j, i) => {
+    const row = `<tr>
+      <td>${j.dokter}</td>
+      <td>${j.spesialis}</td>
+      <td>${j.hari}</td>
+      <td>${j.jam}</td>
+      <td><button onclick="hapusJadwal(${i})">Hapus</button></td>
+    </tr>`;
+    tbody.innerHTML += row;
+  });
+}
+
+// Hapus jadwal
+function hapusJadwal(index) {
+  if (confirm("Yakin ingin menghapus jadwal ini?")) {
+    jadwalList.splice(index, 1);
+    renderJadwalTable();
+  }
+}
+
+// Grafik kunjungan pasien
+function renderChart() {
+  const ctx = document.getElementById('chartKunjungan').getContext('2d');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun"],
+      datasets: [{
+        label: 'Jumlah Kunjungan',
+        data: [120, 150, 180, 140, 200, 160],
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 2,
+        tension: 0.3,
+        fill: true
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: true }
+      }
+    }
+  });
+}
+
+// Inisialisasi saat halaman dimuat
+window.onload = function() {
+  renderDokterTable();
+  renderPasienTable();
+  renderJadwalTable();
+};
+</script>
+</body>
+</html>

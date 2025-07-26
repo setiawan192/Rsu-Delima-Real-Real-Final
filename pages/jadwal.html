@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Buat Janji - RSU Delima</title>
+  <link rel="stylesheet" href="../css/pasien.css" />
+</head>
+<body>
+  <main class="container">
+    <h2>Buat Janji Pemeriksaan</h2>
+    <form id="formJanji" class="form-janji">
+      <div class="form-group">
+        <label for="poli">Poli:</label>
+        <select id="poli" name="poli">
+          <option value="Umum">Umum</option>
+          <option value="Gigi">Gigi</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="dokter">Dokter:</label>
+        <select id="dokter" name="dokter">
+          <option value="dr. Andi">dr. Andi</option>
+          <option value="dr. Sita">dr. Sita</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="tanggal">Tanggal:</label>
+        <input type="date" id="tanggal" name="tanggal" required />
+      </div>
+
+      <div class="form-group">
+        <label for="jam">Jam:</label>
+        <input type="time" id="jam" name="jam" required />
+      </div>
+
+      <button type="submit" class="btn-submit">Simpan Janji</button>
+    </form>
+  </main>
+
+  <script src="../js/perjanjian.js"></script>
+</body>
+</html>

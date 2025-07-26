@@ -1,0 +1,40 @@
+<link rel="stylesheet" href="../css/pasien.css" />
+
+
+<form id="formJanji">
+  <label>Poli:</label>
+  <select id="poli" required>
+    <option value="" disabled selected>Pilih Poli</option>
+    <option value="Umum">Umum</option>
+    <option value="Gigi">Gigi</option>
+    <option value="Kandungan">Kandungan</option>
+    <option value="Anak">Anak</option>
+    <option value="Kardiologi">Kardiologi</option>
+    <option value="Dermatologi">Dermatologi</option>
+    <option value="Orthopedi">Orthopedi</option>
+    <option value="Psikiatri">Psikiatri</option>
+    <option value="THT">THT</option>
+  </select>
+
+  <label>Dokter:</label>
+  <select id="dokter" required>
+    <option value="" disabled selected>Pilih Dokter</option>
+    <option value="dr. Andi">dr. Andi (Umum)</option>
+    <option value="dr. Sita">dr. Sita (Gigi)</option>
+    <option value="dr. Rina">dr. Rina (Kandungan)</option>
+    <option value="dr. Budi">dr. Budi (Anak)</option>
+    <option value="dr. Wati">dr. Wati (Kardiologi)</option>
+    <option value="dr. Agus">dr. Agus (Dermatologi)</option>
+    <option value="dr. Lina">dr. Lina (Orthopedi)</option>
+    <option value="dr. Dedi">dr. Dedi (Psikiatri)</option>
+    <option value="dr. Nia">dr. Nia (THT)</option>
+  </select>
+
+  <label>Tanggal:</label>
+  <input type="date" id="tanggal" required>
+
+  <label>Jam:</label>
+  <input type="time" id="jam" required>
+
+  <button type="submit">Simpan Janji</button>
+</form>

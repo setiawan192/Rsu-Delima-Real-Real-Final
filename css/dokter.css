@@ -1,0 +1,312 @@
+/* Import Font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+:root {
+  --primary-color: #2980b9;
+  --secondary-color: #ecf0f1;
+  --bg-color: #f9f9f9;
+  --text-color: #34495e;
+  --sidebar-bg: #2c3e50;
+  --sidebar-text: #ecf0f1;
+  --success-color: #27ae60;
+  --warning-color: #f39c12;
+  --danger-color: #c0392b;
+  --border-color: #dfe6e9;
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  display: flex;
+}
+
+/* --- Sidebar --- */
+.sidebar {
+  width: 260px;
+  background-color: var(--sidebar-bg);
+  color: var(--sidebar-text);
+  height: 100vh;
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+}
+.sidebar-header {
+  padding: 1.5rem;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+.profile {
+  padding: 1.5rem;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.profile i {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+.profile span {
+  font-weight: 600;
+  font-size: 1.1rem;
+  display: block;
+}
+.profile small {
+  color: var(--secondary-color);
+  opacity: 0.7;
+}
+.sidebar ul {
+  list-style: none;
+  flex-grow: 1;
+  padding-top: 1rem;
+}
+.sidebar ul li a, .sidebar ul li button {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 1rem 1.5rem;
+  text-decoration: none;
+  color: var(--sidebar-text);
+  border: none;
+  background: none;
+  width: 100%;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+  cursor: pointer;
+  border-left: 4px solid transparent;
+  transition: all 0.3s ease;
+}
+.sidebar ul li a.active, .sidebar ul li a:hover {
+  background-color: #34495e;
+  border-left-color: var(--primary-color);
+}
+#logoutBtn {
+  color: var(--danger-color);
+}
+#logoutBtn:hover {
+  background-color: rgba(192, 57, 43, 0.1);
+  border-left-color: var(--danger-color);
+}
+
+/* --- Main Content --- */
+.main-content {
+  margin-left: 260px;
+  padding: 2rem;
+  width: calc(100% - 260px);
+}
+.content-view h1 {
+  margin-bottom: 0.5rem;
+  font-size: 2rem;
+}
+.content-view p {
+  margin-bottom: 1.5rem;
+  color: #7f8c8d;
+}
+
+/* --- Cards --- */
+.stats-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+.card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: var(--card-shadow);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.card-icon {
+  font-size: 1.8rem;
+  color: white;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+}
+.card-info span {
+  font-size: 2rem;
+  font-weight: 700;
+  display: block;
+}
+.card-info p {
+  margin: 0;
+  color: #7f8c8d;
+}
+
+/* --- Table --- */
+.table-container {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: var(--card-shadow);
+  overflow-x: auto;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+thead th {
+  background-color: #f5f7fa;
+  font-weight: 600;
+}
+tbody tr:hover {
+  background-color: #f9f9f9;
+}
+.status {
+  padding: 0.25rem 0.75rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: white;
+  white-space: nowrap;
+}
+.status-menunggu { background-color: var(--warning-color); }
+.status-selesai { background-color: var(--success-color); }
+.status-batal { background-color: var(--danger-color); }
+
+.btn, .btn-primary, .btn-secondary {
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: transform 0.2s;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn-primary { background-color: var(--primary-color); color: white; }
+.btn-secondary { background-color: #bdc3c7; color: var(--text-color); }
+
+/* --- Quick View --- */
+.quick-view {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: var(--card-shadow);
+}
+.quick-view h2 {
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+#jadwalHariIniContainer {
+    font-size: 1rem;
+    padding: 1rem;
+    background-color: #f5f7fa;
+    border-radius: 6px;
+    text-align: center;
+}
+#jadwalHariIniContainer.libur {
+    color: var(--danger-color);
+    font-style: italic;
+}
+
+/* --- Modal Rekam Medis --- */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.6);
+  align-items: flex-start;
+  justify-content: center;
+  overflow-y: auto;
+  padding: 50px 0;
+}
+.modal.show { display: flex; }
+
+.modal-content {
+  background-color: #fff;
+  width: 90%;
+  max-width: 800px;
+  border-radius: 8px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+  animation: slide-in 0.4s ease-out;
+}
+@keyframes slide-in { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.modal-header, .modal-footer { padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+.modal-header { border-bottom: 1px solid var(--border-color); }
+.modal-footer { border-top: 1px solid var(--border-color); gap: 10px; }
+.modal-body { padding: 1.5rem; }
+.close-btn { background: none; border: none; font-size: 1.8rem; cursor: pointer; color: #95a5a6; }
+
+.patient-info-banner {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+    background-color: #f5f7fa;
+    border-radius: 6px;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.tabs {
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 1.5rem;
+}
+.tab-link {
+  padding: 0.8rem 1.2rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 1rem;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s;
+}
+.tab-link.active {
+  border-bottom-color: var(--primary-color);
+  font-weight: 600;
+  color: var(--primary-color);
+}
+.tab-content { display: none; }
+.tab-content.active { display: block; animation: fade-in 0.5s; }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+/* Form SOAP & Riwayat */
+.form-group { margin-bottom: 1.2rem; }
+.form-group label { display: block; font-weight: 500; margin-bottom: 0.5rem; }
+textarea { width: 100%; padding: 0.8rem; border: 1px solid var(--border-color); border-radius: 6px; font-family: 'Poppins', sans-serif; resize: vertical; }
+
+#riwayatContainer .riwayat-item {
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    margin-bottom: 1rem;
+}
+#riwayatContainer .riwayat-item h4 {
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+}
+#riwayatContainer .riwayat-item p {
+    margin-bottom: 0.3rem;
+    font-size: 0.9rem;
+}
+#riwayatContainer .riwayat-item p strong {
+    display: inline-block;
+    width: 100px;
+}

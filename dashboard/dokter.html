@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Dokter - RSU Delima</title>
+  <link rel="stylesheet" href="../css/dokter.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+</head>
+<body>
+
+<script>
+  const userRole = localStorage.getItem("role");
+  const username = localStorage.getItem("username");
+  if (userRole !== "dokter" || !username) {
+    alert("Akses ditolak! Anda harus login sebagai dokter.");
+    window.location.href = "../login.html";
+  }
+</script>
+
+<!-- Sidebar -->
+<nav class="sidebar">
+  <div class="sidebar-header">
+    <i class="fas fa-hospital-user"></i>
+    <h2>RSU Delima</h2>
+  </div>
+  <div class="profile">
+    <i class="fas fa-user-doctor"></i>
+    <span id="doctorName"></span>
+    <small>Dokter</small>
+  </div>
+  <ul>
+    <li><a href="#" class="nav-link active" data-view="dashboard-view"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+    <li><a href="#" class="nav-link" data-view="janji-view"><i class="fas fa-calendar-check"></i> Janji Hari Ini</a></li>
+    <li><a href="#" class="nav-link" data-view="jadwal-view"><i class="fas fa-calendar-alt"></i> Jadwal Saya</a></li>
+    <li><button id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button></li>
+  </ul>
+</nav>
+
+<!-- Main Content -->
+<main class="main-content">
+  <section id="dashboard-view" class="content-view">
+    <h1>Dashboard</h1>
+    <p id="welcomeMessage"></p>
+    <div class="stats-cards">
+      <div class="card">
+        <div class="card-icon" style="background-color: #3498db;"><i class="fas fa-users"></i></div>
+        <div class="card-info">
+          <span id="janjiHariIniCount">-</span>
+          <p>Janji Hari Ini</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-icon" style="background-color: #2ecc71;"><i class="fas fa-user-clock"></i></div>
+        <div class="card-info">
+          <span id="pasienBerikutnya">-</span>
+          <p>Pasien Berikutnya</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-icon" style="background-color: #e67e22;"><i class="fas fa-check-circle"></i></div>
+        <div class="card-info">
+          <span id="janjiSelesaiCount">0</span>
+          <p>Telah Dilayani</p>
+        </div>
+      </div>
+    </div>
+    <div class="quick-view">
+      <h2><i class="fas fa-calendar-day"></i> Jadwal Praktik Anda Hari Ini</h2>
+      <div id="jadwalHariIniContainer"></div>
+    </div>
+  </section>
+
+  <section id="janji-view" class="content-view" style="display: none;">
+    <h1><i class="fas fa-calendar-check"></i> Daftar Janji Pasien Hari Ini</h1>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>No. Antrian</th>
+            <th>Nama Pasien</th>
+            <th>Jam Janji</th>
+            <th>Status</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="janjiTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="jadwal-view" class="content-view" style="display: none;">
+    <h1><i class="fas fa-calendar-alt"></i> Jadwal Praktik Saya</h1>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Hari</th>
+            <th>Poli</th>
+            <th>Jam Mulai</th>
+            <th>Jam Selesai</th>
+          </tr>
+        </thead>
+        <tbody id="jadwalTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<!-- Modal -->
+<div id="rekamMedisModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 id="modalTitle">Rekam Medis Pasien</h2>
+      <button class="close-btn">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="patient-info-banner">
+        <div><strong>Pasien:</strong> <span id="rmePasienNama"></span></div>
+        <div><strong>No. RM:</strong> <span id="rmePasienRm"></span></div>
+        <div><strong>Tgl Lahir:</strong> <span id="rmePasienTglLahir"></span></div>
+      </div>
+      <div class="tabs">
+        <button class="tab-link active" data-tab="catatanBaru">Catatan Klinis Baru (SOAP)</button>
+        <button class="tab-link" data-tab="riwayat">Riwayat Kunjungan</button>
+      </div>
+      <div id="catatanBaru" class="tab-content active">
+        <form id="soapForm">
+          <input type="hidden" id="appointmentId">
+          <div class="form-group"><label>S:</label><textarea id="subjective" rows="3"></textarea></div>
+          <div class="form-group"><label>O:</label><textarea id="objective" rows="3"></textarea></div>
+          <div class="form-group"><label>A:</label><textarea id="assessment" rows="2"></textarea></div>
+          <div class="form-group"><label>P:</label><textarea id="plan" rows="3"></textarea></div>
+        </form>
+      </div>
+      <div id="riwayat" class="tab-content">
+        <div id="riwayatContainer"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary close-btn">Batal</button>
+      <button id="saveSoapBtn" class="btn-primary">Simpan Catatan & Selesaikan</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const janjiPasien = [
+    { id: 1, nama: "Budi", jam: "08:00", status: "Menunggu", rm: "RM001", tglLahir: "1990-01-10" },
+    { id: 2, nama: "Siti", jam: "08:30", status: "Menunggu", rm: "RM002", tglLahir: "1985-06-22" }
+  ];
+
+  const jadwalDokter = [
+    { hari: "Senin", poli: "Umum", mulai: "08:00", selesai: "12:00" },
+    { hari: "Rabu", poli: "Anak", mulai: "13:00", selesai: "16:00" }
+  ];
+
+  const riwayatMedis = {
+    "RM001": [{ tanggal: "2024-05-01", diagnosis: "ISPA", terapi: "Paracetamol" }],
+    "RM002": [{ tanggal: "2024-07-01", diagnosis: "Migrain", terapi: "Obat anti nyeri" }]
+  };
+
+  function renderJanjiTable() {
+    const tbody = document.getElementById("janjiTableBody");
+    tbody.innerHTML = janjiPasien.map((p, i) => `
+      <tr>
+        <td>${i + 1}</td>
+        <td>${p.nama}</td>
+        <td>${p.jam}</td>
+        <td id="status-${p.id}">${p.status}</td>
+        <td>
+          <button onclick="bukaRekamMedis(${p.id})">Lihat</button>
+          ${p.status === "Menunggu" ? `<button onclick="accJanji(${p.id})">ACC</button>` : ""}
+        </td>
+      </tr>
+    `).join("");
+  }
+
+  function accJanji(id) {
+    const janji = janjiPasien.find(j => j.id === id);
+    if (!janji) return;
+    janji.status = "Disetujui";
+    document.getElementById(`status-${id}`).innerText = "Disetujui";
+    renderJanjiTable();
+  }
+
+  function bukaRekamMedis(id) {
+    const pasien = janjiPasien.find(p => p.id === id);
+    if (!pasien) return;
+    document.getElementById("appointmentId").value = id;
+    document.getElementById("rmePasienNama").innerText = pasien.nama;
+    document.getElementById("rmePasienRm").innerText = pasien.rm;
+    document.getElementById("rmePasienTglLahir").innerText = pasien.tglLahir;
+
+    const riwayat = riwayatMedis[pasien.rm] || [];
+    document.getElementById("riwayatContainer").innerHTML = riwayat.length ?
+      riwayat.map(r => `<div><strong>${r.tanggal}</strong>: ${r.diagnosis} → ${r.terapi}</div>`).join("") :
+      "<p>Belum ada riwayat kunjungan.</p>";
+
+    document.querySelectorAll(".tab-link").forEach(btn => btn.classList.remove("active"));
+    document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+    document.querySelector(".tab-link[data-tab='catatanBaru']").classList.add("active");
+    document.getElementById("catatanBaru").classList.add("active");
+
+    document.getElementById("rekamMedisModal").style.display = "block";
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("doctorName").innerText = localStorage.getItem("username");
+    document.getElementById("welcomeMessage").innerText = `Selamat datang, dr. ${localStorage.getItem("username")}!`;
+    document.getElementById("janjiHariIniCount").innerText = janjiPasien.length;
+    document.getElementById("pasienBerikutnya").innerText = janjiPasien[0]?.nama || "-";
+
+    const hariIni = new Date().toLocaleDateString("id-ID", { weekday: "long" });
+    const jadwalHariIni = jadwalDokter.filter(j => j.hari === hariIni);
+    const jadwalContainer = document.getElementById("jadwalHariIniContainer");
+    jadwalContainer.innerHTML = jadwalHariIni.length ?
+      jadwalHariIni.map(j => `<div><strong>${j.poli}</strong> pukul ${j.mulai} - ${j.selesai}</div>`).join("") :
+      "<p>Tidak ada jadwal hari ini.</p>";
+
+    document.getElementById("jadwalTableBody").innerHTML = jadwalDokter.map(j => `
+      <tr><td>${j.hari}</td><td>${j.poli}</td><td>${j.mulai}</td><td>${j.selesai}</td></tr>`).join("");
+
+    renderJanjiTable();
+
+    document.querySelectorAll(".nav-link").forEach(link => {
+      link.addEventListener("click", function () {
+        document.querySelectorAll(".content-view").forEach(view => view.style.display = "none");
+        document.getElementById(this.dataset.view).style.display = "block";
+        document.querySelectorAll(".nav-link").forEach(l => l.classList.remove("active"));
+        this.classList.add("active");
+      });
+    });
+
+    document.querySelectorAll(".close-btn").forEach(btn =>
+      btn.addEventListener("click", () => document.getElementById("rekamMedisModal").style.display = "none")
+    );
+
+    document.getElementById("saveSoapBtn").addEventListener("click", () => {
+      alert("Catatan SOAP disimpan ✅");
+      document.getElementById("rekamMedisModal").style.display = "none";
+    });
+
+    document.querySelectorAll(".tab-link").forEach(btn =>
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".tab-link").forEach(b => b.classList.remove("active"));
+        document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+        btn.classList.add("active");
+        document.getElementById(btn.dataset.tab).classList.add("active");
+      })
+    );
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      localStorage.clear();
+      window.location.href = "../login.html";
+    });
+  });
+</script>
+
+</body>
+</html>
